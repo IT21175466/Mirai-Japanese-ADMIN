@@ -172,7 +172,13 @@ class _LessonsTabState extends State<LessonsTab> {
           loading = false;
         });
       });
-      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+
+      if (imageUrl ==
+          'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/lesson_images%2Flanguage.jpg?alt=media&token=4891bb7d-92df-4c5e-b164-c84b12605cca') {
+        print('Default Image Cannot Delete');
+      } else {
+        await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+      }
     } catch (e) {
       setState(() {
         loading = false;
@@ -327,7 +333,7 @@ class _LessonsTabState extends State<LessonsTab> {
                           lessionNo: lessonNoController.text.trim(),
                           lessonTitle: lessonTitleController.text,
                           imageUrl:
-                              'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/lesson_images%2Flearning.jpeg?alt=media&token=6934d43d-604e-45b0-a9d5-983517f2e3ad',
+                              'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/lesson_images%2Flanguage.jpg?alt=media&token=4891bb7d-92df-4c5e-b164-c84b12605cca',
                         );
 
                         await addLessonToFirebaseWithoutImage(
