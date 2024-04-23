@@ -446,7 +446,7 @@ class _LessonsTabState extends State<LessonsTab> {
                     final les = Lesson(
                       lessionNo: lessonNoController.text.trim(),
                       lessonTitle: lessonTitleController.text,
-                      imageUrl: 'imageUrl',
+                      imageUrl: imageUrl,
                     );
 
                     editLesson(
