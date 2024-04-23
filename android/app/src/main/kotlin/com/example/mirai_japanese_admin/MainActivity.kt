@@ -1,4 +1,4 @@
-package com.example.mirai_japanese_admin
+package com.mirai_japanese_admin_panel.mirai_japanese_admin
 
 import io.flutter.embedding.android.FlutterActivity
 
