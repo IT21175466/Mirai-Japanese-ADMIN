@@ -103,6 +103,38 @@ class _LessonsTabState extends State<LessonsTab> {
     }
   }
 
+  addLessonToFirebaseWithoutImage(
+      Lesson lesson, BuildContext context, String lessonNo) async {
+    setState(() {
+      loading = true;
+    });
+    try {
+      db
+          .collection("Lessons")
+          .doc(lessonNo)
+          .set(lesson.toJson())
+          .then((value) async {
+        setState(() {
+          loading = false;
+        });
+      });
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    } finally {
+      setState(() {
+        loading = false;
+      });
+      Navigator.pop(context);
+    }
+  }
+
   editLesson(Lesson lesson, BuildContext context, String lessonNo) async {
     setState(() {
       loading = true;
@@ -259,6 +291,8 @@ class _LessonsTabState extends State<LessonsTab> {
                   setState(() {
                     lessonNoController.clear();
                     lessonTitleController.clear();
+                    imageUploaded = false;
+                    selectedFile = '';
                   });
                   Navigator.of(context).pop();
                 },
@@ -285,8 +319,20 @@ class _LessonsTabState extends State<LessonsTab> {
                         loading = true;
                       });
 
-                      await uploadToFirebase(
-                          lessonNoController.text.toString());
+                      if (imageUploaded == true) {
+                        await uploadToFirebase(
+                            lessonNoController.text.toString());
+                      } else {
+                        final les = Lesson(
+                          lessionNo: lessonNoController.text.trim(),
+                          lessonTitle: lessonTitleController.text,
+                          imageUrl:
+                              'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/lesson_images%2Flearning.jpeg?alt=media&token=6934d43d-604e-45b0-a9d5-983517f2e3ad',
+                        );
+
+                        await addLessonToFirebaseWithoutImage(
+                            les, context, lessonNoController.text.trim());
+                      }
                     } catch (e) {
                       print(e);
                     } finally {
@@ -314,7 +360,7 @@ class _LessonsTabState extends State<LessonsTab> {
       );
     }
 
-    void editLessonAlertDialog(BuildContext context) {
+    void editLessonAlertDialog(BuildContext context, String imageUrl) {
       showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -359,15 +405,8 @@ class _LessonsTabState extends State<LessonsTab> {
                     height: 80,
                     width: 80,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.add_photo_alternate,
-                        size: 35,
-                      ),
-                    ),
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(image: NetworkImage(imageUrl))),
                   ),
                   SizedBox(
                     height: 10,
@@ -483,7 +522,7 @@ class _LessonsTabState extends State<LessonsTab> {
                   height: 80,
                   width: 80,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
                     image: DecorationImage(
                       image: NetworkImage(image),
@@ -952,7 +991,10 @@ class _LessonsTabState extends State<LessonsTab> {
                                                 lessonTitleController.text =
                                                     docs[index]['LessonTitle'];
                                               });
-                                              editLessonAlertDialog(context);
+                                              editLessonAlertDialog(
+                                                context,
+                                                docs[index]['Image_Url'],
+                                              );
                                             },
                                             child: Icon(Icons.edit),
                                           ),
