@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "380111969288",
+    "project_id": "mirai-japanese-n5",
+    "storage_bucket": "mirai-japanese-n5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380111969288:android:299e325b72fe6d306645bd",
+        "android_client_info": {
+          "package_name": "com.mirai_japanese_admin_panel.mirai_japanese_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhzalUZfOYLG7ocjKYsA8j716RxNIHXW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380111969288:android:72aa466172537d866645bd",
+        "android_client_info": {
+          "package_name": "com.miraijapanesenflutter.miraijapaneselms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhzalUZfOYLG7ocjKYsA8j716RxNIHXW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

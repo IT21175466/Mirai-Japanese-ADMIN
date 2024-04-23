@@ -1,4 +1,8 @@
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firabase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/constaints/app_colors.dart';
 import 'package:mirai_japanese_admin/models/lesson.dart';
@@ -24,6 +28,49 @@ class _LessonsTabState extends State<LessonsTab> {
   final db = FirebaseFirestore.instance;
 
   bool loading = false;
+  bool imageUploaded = false;
+
+  String selectedFile = '';
+  Uint8List selectedImageInBytes = Uint8List(8);
+
+  Future uploadToFirebase(String lessonID) async {
+    String imageUrl = '';
+    try {
+      setState(() {
+        loading = true;
+      });
+      firabase_storage.UploadTask uploadTask;
+
+      firabase_storage.Reference ref = firabase_storage.FirebaseStorage.instance
+          .ref()
+          .child('lesson_images/${lessonID}');
+
+      final metadata =
+          firabase_storage.SettableMetadata(contentType: 'image/png');
+
+      uploadTask = ref.putData(selectedImageInBytes, metadata);
+
+      await uploadTask.whenComplete(() => null);
+      imageUrl = await ref.getDownloadURL();
+
+      print('Download Link: ${imageUrl}');
+
+      final les = Lesson(
+        lessionNo: lessonNoController.text.trim(),
+        lessonTitle: lessonTitleController.text,
+        imageUrl: imageUrl,
+      );
+
+      addLessonToFirebase(les, context, lessonNoController.text.trim());
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        loading = false;
+      });
+      Navigator.pop(context);
+    }
+  }
 
   addLessonToFirebase(
       Lesson lesson, BuildContext context, String lessonNo) async {
@@ -49,6 +96,10 @@ class _LessonsTabState extends State<LessonsTab> {
           content: Text(e.toString()),
         ),
       );
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -78,7 +129,8 @@ class _LessonsTabState extends State<LessonsTab> {
     }
   }
 
-  deleteLessonFirebase(BuildContext context, String lessonNo) async {
+  deleteLessonFirebase(
+      BuildContext context, String lessonNo, String imageUrl) async {
     setState(() {
       loading = true;
     });
@@ -88,6 +140,7 @@ class _LessonsTabState extends State<LessonsTab> {
           loading = false;
         });
       });
+      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
     } catch (e) {
       setState(() {
         loading = false;
@@ -108,126 +161,156 @@ class _LessonsTabState extends State<LessonsTab> {
     void addLessonAlertDialog(BuildContext context) {
       showDialog(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: Text(
-            "Add New Lesson",
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
+        builder: (BuildContext context) =>
+            StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text(
+              "Add New Lesson",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
             ),
-          ),
-          content: Container(
-            width: screenWidth / 4,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PhoneTextField(
-                    controller: lessonNoController,
-                    labelText: 'Lesson Number',
-                    hintText: '123XX (Enter only numbers)',
-                  ),
-                  CustomTextField(
-                    controller: lessonTitleController,
-                    labelText: 'Lesson Title',
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "Lesson Image (Optional)",
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
+            content: Container(
+              width: screenWidth / 4,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PhoneTextField(
+                      controller: lessonNoController,
+                      labelText: 'Lesson Number',
+                      hintText: '123XX (Enter only numbers)',
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
+                    CustomTextField(
+                      controller: lessonTitleController,
+                      labelText: 'Lesson Title',
                     ),
-                    child: Center(
-                      child: Icon(
-                        Icons.add_photo_alternate,
-                        size: 35,
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Lesson Image (Optional)",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  lessonNoController.clear();
-                  lessonTitleController.clear();
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  color: Colors.red,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (lessonNoController.text.isEmpty ||
-                    lessonTitleController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Please Enter Details"),
+                    SizedBox(
+                      height: 10,
                     ),
-                  );
-                } else {
-                  try {
-                    final les = Lesson(
-                      lessionNo: lessonNoController.text.trim(),
-                      lessonTitle: lessonTitleController.text,
-                      imageUrl: 'imageUrl',
-                    );
+                    imageUploaded
+                        ? Container(
+                            height: 80,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                image: MemoryImage(selectedImageInBytes),
+                              ),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () async {
+                              try {
+                                FilePickerResult? fileResult =
+                                    await FilePicker.platform.pickFiles();
 
-                    addLessonToFirebase(
-                      les,
-                      context,
-                      lessonNoController.text.toString(),
-                    );
-                  } catch (e) {
-                    print(e);
-                  } finally {
-                    setState(() {
-                      lessonNoController.clear();
-                      lessonTitleController.clear();
-                    });
-
-                    Navigator.of(context).pop();
-                  }
-                }
-              },
-              child: const Text(
-                "Add",
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  color: AppColors.accentColor,
+                                if (fileResult != null) {
+                                  setState(() {
+                                    selectedFile = fileResult.files.first.name;
+                                    selectedImageInBytes =
+                                        fileResult.files.first.bytes!;
+                                    imageUploaded = true;
+                                  });
+                                }
+                                print(selectedFile);
+                              } catch (e) {
+                                print(e);
+                              }
+                            },
+                            child: Container(
+                              height: 80,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.add_photo_alternate,
+                                  size: 35,
+                                ),
+                              ),
+                            ),
+                          ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    lessonNoController.clear();
+                    lessonTitleController.clear();
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  if (lessonNoController.text.isEmpty ||
+                      lessonTitleController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Please Enter Details"),
+                      ),
+                    );
+                  } else {
+                    try {
+                      setState(() {
+                        loading = true;
+                      });
+
+                      await uploadToFirebase(
+                          lessonNoController.text.toString());
+                    } catch (e) {
+                      print(e);
+                    } finally {
+                      setState(() {
+                        lessonNoController.clear();
+                        lessonTitleController.clear();
+                        imageUploaded = false;
+                      });
+                    }
+                  }
+                },
+                child: loading
+                    ? CircularProgressIndicator()
+                    : Text(
+                        "Add",
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: AppColors.accentColor,
+                        ),
+                      ),
+              ),
+            ],
+          );
+        }),
       );
     }
 
@@ -356,7 +439,8 @@ class _LessonsTabState extends State<LessonsTab> {
       );
     }
 
-    void deleteLesson(BuildContext context, String title, String no) {
+    void deleteLesson(
+        BuildContext context, String title, String no, String image) {
       showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -401,6 +485,10 @@ class _LessonsTabState extends State<LessonsTab> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.white,
+                    image: DecorationImage(
+                      image: NetworkImage(image),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -424,7 +512,7 @@ class _LessonsTabState extends State<LessonsTab> {
             ),
             TextButton(
               onPressed: () async {
-                deleteLessonFirebase(context, no);
+                deleteLessonFirebase(context, no, image);
                 Navigator.of(context).pop();
               },
               child: const Text(
@@ -834,14 +922,17 @@ class _LessonsTabState extends State<LessonsTab> {
                                   Container(
                                     width: screenWidth / 10 * 2,
                                     child: Center(
-                                      child: Text(
-                                        docs[index]['Image_Url'],
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15,
-                                          color: AppColors.textBlackColor,
+                                      child: Container(
+                                        height: 50,
+                                        width: 50,
+                                        decoration: BoxDecoration(
+                                          //color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                         ),
+                                        child: Image.network(docs[index]
+                                                ['Image_Url']
+                                            .toString()),
                                       ),
                                     ),
                                   ),
@@ -874,6 +965,7 @@ class _LessonsTabState extends State<LessonsTab> {
                                                 context,
                                                 docs[index]['LessonTitle'],
                                                 docs[index]['LessonNo'],
+                                                docs[index]['Image_Url'],
                                               );
                                             },
                                             child: Icon(

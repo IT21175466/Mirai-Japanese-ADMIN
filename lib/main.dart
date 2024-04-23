@@ -10,6 +10,7 @@ void main() async {
       appId: '1:380111969288:web:43f44571fbae5c726645bd',
       messagingSenderId: '380111969288',
       projectId: 'mirai-japanese-n5',
+      storageBucket: 'gs://mirai-japanese-n5.appspot.com',
     ),
   );
   runApp(const MyApp());
