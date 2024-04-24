@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/dashboard/dashboard.dart';
-import 'package:mirai_japanese_admin/dashboard/lesson_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,12 +44,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      //home: Dashboard(),
-      home: LessonsPage(
-          lessionNo: '2',
-          lessonTitle: 'lessonTitle',
-          imageUrl:
-              'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/lesson_images%2Flanguage.jpg?alt=media&token=4891bb7d-92df-4c5e-b164-c84b12605cca'),
+      home: Dashboard(),
     );
   }
 }
