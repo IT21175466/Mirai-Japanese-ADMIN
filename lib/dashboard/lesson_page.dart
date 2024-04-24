@@ -464,6 +464,7 @@ class _LessonsPageState extends State<LessonsPage> {
         selectedAnswer2ImageUploaded = false;
         selectedAnswer3ImageUploaded = false;
 
+        questionController.clear();
         questionNoController.clear();
         answer1Controller.clear();
         answer2Controller.clear();
@@ -481,6 +482,68 @@ class _LessonsPageState extends State<LessonsPage> {
         selectedAnswer2Audio = '';
         selectedAnswer3Audio = '';
       });
+    }
+  }
+
+  //Edit
+  editQuestionInFirebaseFunction(
+      Question question, BuildContext context, String lessonNo) async {
+    setState(() {
+      loading = true;
+    });
+    try {
+      db
+          .collection("Lessons")
+          .doc(lessonNo)
+          .collection("Questions")
+          .doc(questionNoController.text.toString())
+          .update(question.toJson())
+          .then((value) async {});
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    } finally {
+      setState(() {
+        selectedQuestionImageInBytes = Uint8List(0);
+        selectedAnswer1ImageInBytes = Uint8List(0);
+        selectedAnswer2ImageInBytes = Uint8List(0);
+        selectedAnswer3ImageInBytes = Uint8List(0);
+
+        selectedQuestionImage = '';
+        selectedAnswer1Image = '';
+        selectedAnswer2Image = '';
+        selectedAnswer3Image = '';
+
+        selectedQuestionImageUploaded = false;
+        selectedAnswer1ImageUploaded = false;
+        selectedAnswer2ImageUploaded = false;
+        selectedAnswer3ImageUploaded = false;
+
+        questionController.clear();
+        questionNoController.clear();
+        answer1Controller.clear();
+        answer2Controller.clear();
+        answer3Controller.clear();
+        correctAnswerController.clear();
+
+        //Audio
+        selectedQuestionAudioUploaded = false;
+        selectedAnswer1AudioUploaded = false;
+        selectedAnswer2AudioUploaded = false;
+        selectedAnswer3AudioUploaded = false;
+
+        selectedQuestionAudio = '';
+        selectedAnswer1Audio = '';
+        selectedAnswer2Audio = '';
+        selectedAnswer3Audio = '';
+      });
+      Navigator.pop(context);
     }
   }
 
@@ -543,6 +606,427 @@ class _LessonsPageState extends State<LessonsPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+    void editQuestionAlertDialog(BuildContext context, Question question) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text(
+              "Edit Question",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
+            ),
+            content: Container(
+              height: screenHeight - 300,
+              width: screenWidth / 2,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      "Required*",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                      ),
+                    ),
+                    PhoneTextField(
+                      controller: questionNoController,
+                      labelText: 'Question Number',
+                      hintText: '1 (Enter only numbers)',
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            controller: questionController,
+                            labelText: 'Question',
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.questionImage.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.questionImage),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.questionVoice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            controller: answer1Controller,
+                            labelText: 'Answer 1',
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.answer1Image.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.answer1Image),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.answer1Voice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            controller: answer2Controller,
+                            labelText: 'Answer 2',
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.answer2Image.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.answer2Image),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.answer2Voice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            controller: answer3Controller,
+                            labelText: 'Answer 3',
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.answer3Image.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.answer3Image),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.answer3Voice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    CustomTextField(
+                      controller: correctAnswerController,
+                      labelText: 'Correct Answer',
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    selectedQuestionImageInBytes = Uint8List(0);
+                    selectedAnswer1ImageInBytes = Uint8List(0);
+                    selectedAnswer2ImageInBytes = Uint8List(0);
+                    selectedAnswer3ImageInBytes = Uint8List(0);
+
+                    selectedQuestionImage = '';
+                    selectedAnswer1Image = '';
+                    selectedAnswer2Image = '';
+                    selectedAnswer3Image = '';
+
+                    selectedQuestionImageUploaded = false;
+                    selectedAnswer1ImageUploaded = false;
+                    selectedAnswer2ImageUploaded = false;
+                    selectedAnswer3ImageUploaded = false;
+
+                    questionController.clear();
+                    questionNoController.clear();
+                    answer1Controller.clear();
+                    answer2Controller.clear();
+                    answer3Controller.clear();
+                    correctAnswerController.clear();
+
+                    //Audio
+                    selectedQuestionAudioUploaded = false;
+                    selectedAnswer1AudioUploaded = false;
+                    selectedAnswer2AudioUploaded = false;
+                    selectedAnswer3AudioUploaded = false;
+
+                    selectedQuestionAudio = '';
+                    selectedAnswer1Audio = '';
+                    selectedAnswer2Audio = '';
+                    selectedAnswer3Audio = '';
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              loading
+                  ? CircularProgressIndicator()
+                  : TextButton(
+                      onPressed: () async {
+                        setState(() {
+                          loading = true;
+                        });
+                        if (questionNoController.text.isEmpty ||
+                            questionController.text.isEmpty ||
+                            answer1Controller.text.isEmpty ||
+                            answer2Controller.text.isEmpty ||
+                            answer3Controller.text.isEmpty ||
+                            correctAnswerController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Please Enter Details"),
+                            ),
+                          );
+                        } else {
+                          try {
+                            if (correctAnswerController.text ==
+                                    answer1Controller.text ||
+                                correctAnswerController.text ==
+                                    answer2Controller.text ||
+                                correctAnswerController.text ==
+                                    answer3Controller.text) {
+                              final questionUpdate = Question(
+                                questionNumber: questionNoController.text,
+                                question: questionController.text,
+                                answer1: answer1Controller.text,
+                                answer2: answer2Controller.text,
+                                answer3: answer3Controller.text,
+                                correctAnswer: correctAnswerController.text,
+                                questionImage: question.questionImage,
+                                answer1Image: question.answer1Image,
+                                answer2Image: question.answer2Image,
+                                answer3Image: question.answer3Image,
+                                questionVoice: question.questionVoice,
+                                answer1Voice: question.answer1Voice,
+                                answer2Voice: question.answer2Voice,
+                                answer3Voice: question.answer3Voice,
+                              );
+
+                              editQuestionInFirebaseFunction(
+                                questionUpdate,
+                                context,
+                                widget.lessionNo,
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Please Check Answer"),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            print(e);
+                          }
+                        }
+                      },
+                      child: const Text(
+                        "Save",
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: AppColors.accentColor,
+                        ),
+                      ),
+                    ),
+            ],
+          );
+        }),
+      );
+    }
 
     void addQuestionAlertDialog() {
       showDialog(
@@ -1034,6 +1518,7 @@ class _LessonsPageState extends State<LessonsPage> {
                     selectedAnswer2ImageUploaded = false;
                     selectedAnswer3ImageUploaded = false;
 
+                    questionController.clear();
                     questionNoController.clear();
                     answer1Controller.clear();
                     answer2Controller.clear();
@@ -1079,6 +1564,9 @@ class _LessonsPageState extends State<LessonsPage> {
                               content: Text("Please Enter Details"),
                             ),
                           );
+                          setState(() {
+                            loading = false;
+                          });
                         } else {
                           try {
                             if (correctAnswerController.text ==
@@ -1097,43 +1585,12 @@ class _LessonsPageState extends State<LessonsPage> {
                                   content: Text("Please Check Answer"),
                                 ),
                               );
+                              setState(() {
+                                loading = false;
+                              });
                             }
                           } catch (e) {
                             print(e);
-                          } finally {
-                            setState(() {
-                              selectedQuestionImageInBytes = Uint8List(0);
-                              selectedAnswer1ImageInBytes = Uint8List(0);
-                              selectedAnswer2ImageInBytes = Uint8List(0);
-                              selectedAnswer3ImageInBytes = Uint8List(0);
-
-                              selectedQuestionImage = '';
-                              selectedAnswer1Image = '';
-                              selectedAnswer2Image = '';
-                              selectedAnswer3Image = '';
-
-                              selectedQuestionImageUploaded = false;
-                              selectedAnswer1ImageUploaded = false;
-                              selectedAnswer2ImageUploaded = false;
-                              selectedAnswer3ImageUploaded = false;
-
-                              questionNoController.clear();
-                              answer1Controller.clear();
-                              answer2Controller.clear();
-                              answer3Controller.clear();
-                              correctAnswerController.clear();
-
-                              //Audio
-                              selectedQuestionAudioUploaded = false;
-                              selectedAnswer1AudioUploaded = false;
-                              selectedAnswer2AudioUploaded = false;
-                              selectedAnswer3AudioUploaded = false;
-
-                              selectedQuestionAudio = '';
-                              selectedAnswer1Audio = '';
-                              selectedAnswer2Audio = '';
-                              selectedAnswer3Audio = '';
-                            });
                           }
                         }
                       },
@@ -1359,17 +1816,54 @@ class _LessonsPageState extends State<LessonsPage> {
                                         Spacer(),
                                         GestureDetector(
                                           onTap: () {
-                                            // setState(() {
-                                            //   lessonNoController.text =
-                                            //       docs[index]['LessonNo'];
+                                            setState(() {
+                                              questionNoController.text =
+                                                  docs[index]['QuestionNo'];
 
-                                            //   lessonTitleController.text =
-                                            //       docs[index]['LessonTitle'];
-                                            // });
-                                            // editLessonAlertDialog(
-                                            //   context,
-                                            //   docs[index]['Image_Url'],
-                                            // );
+                                              questionController.text =
+                                                  docs[index]['Question'];
+
+                                              answer1Controller.text =
+                                                  docs[index]['Answer1'];
+                                              answer2Controller.text =
+                                                  docs[index]['Answer2'];
+                                              answer3Controller.text =
+                                                  docs[index]['Answer3'];
+                                              correctAnswerController.text =
+                                                  docs[index]['CorrectAnswer'];
+                                            });
+
+                                            final editQuestion = Question(
+                                              questionNumber:
+                                                  questionNoController.text,
+                                              question: questionController.text,
+                                              answer1: answer1Controller.text,
+                                              answer2: answer2Controller.text,
+                                              answer3: answer3Controller.text,
+                                              correctAnswer:
+                                                  correctAnswerController.text,
+                                              questionImage: docs[index]
+                                                  ['Question_Image'],
+                                              answer1Image: docs[index]
+                                                  ['Answer1_Image'],
+                                              answer2Image: docs[index]
+                                                  ['Answer2_Image'],
+                                              answer3Image: docs[index]
+                                                  ['Answer3_Image'],
+                                              questionVoice: docs[index]
+                                                  ['Question_Voice'],
+                                              answer1Voice: docs[index]
+                                                  ['Answer1_Voice'],
+                                              answer2Voice: docs[index]
+                                                  ['Answer2_Voice'],
+                                              answer3Voice: docs[index]
+                                                  ['Answer3_Voice'],
+                                            );
+
+                                            editQuestionAlertDialog(
+                                              context,
+                                              editQuestion,
+                                            );
                                           },
                                           child: Icon(Icons.edit),
                                         ),
