@@ -9,6 +9,7 @@ import 'package:mirai_japanese_admin/models/question.dart';
 import 'package:mirai_japanese_admin/widgets/custom_button.dart';
 import 'package:mirai_japanese_admin/widgets/phone_textfeild.dart';
 import 'package:mirai_japanese_admin/widgets/textfiled.dart';
+import 'package:mirai_japanese_admin/widgets/user_info_card.dart';
 import 'package:uuid/uuid.dart';
 
 class LessonsPage extends StatefulWidget {
@@ -1028,6 +1029,310 @@ class _LessonsPageState extends State<LessonsPage> {
       );
     }
 
+    void viewQuestionAlertDialog(BuildContext context, Question question) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text(
+              "View Question",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
+            ),
+            content: Container(
+              height: screenHeight - 300,
+              width: screenWidth / 2,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    UserInfoCard(
+                      phone: 'Question Number',
+                      info: question.questionNumber,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: UserInfoCard(
+                            phone: 'Question',
+                            info: question.question,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.questionImage.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.questionImage),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.questionVoice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: UserInfoCard(
+                            phone: 'Answer 1',
+                            info: question.answer1,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.answer1Image.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.answer1Image),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.answer1Voice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: UserInfoCard(
+                            phone: 'Answer 2',
+                            info: question.answer2,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.answer2Image.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.answer2Image),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.answer2Voice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: UserInfoCard(
+                            phone: 'Answer 3',
+                            info: question.answer3,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        question.answer3Image.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    image: NetworkImage(question.answer3Image),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        question.answer3Voice.isNotEmpty
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.voice_over_off),
+                                ),
+                              ),
+                      ],
+                    ),
+                    UserInfoCard(
+                      phone: 'Correct Answer',
+                      info: question.correctAnswer,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: CustomButton(
+                      text: 'OK', height: 50, width: screenWidth / 10)),
+            ],
+          );
+        }),
+      );
+    }
+
     void addQuestionAlertDialog() {
       showDialog(
         context: context,
@@ -1913,7 +2218,39 @@ class _LessonsPageState extends State<LessonsPage> {
                                         ),
                                         Spacer(),
                                         GestureDetector(
-                                          onTap: () {},
+                                          onTap: () {
+                                            final viewQuestion = Question(
+                                              questionNumber: docs[index]
+                                                  ['QuestionNo'],
+                                              question: docs[index]['Question'],
+                                              answer1: docs[index]['Answer1'],
+                                              answer2: docs[index]['Answer2'],
+                                              answer3: docs[index]['Answer3'],
+                                              correctAnswer: docs[index]
+                                                  ['CorrectAnswer'],
+                                              questionImage: docs[index]
+                                                  ['Question_Image'],
+                                              answer1Image: docs[index]
+                                                  ['Answer1_Image'],
+                                              answer2Image: docs[index]
+                                                  ['Answer2_Image'],
+                                              answer3Image: docs[index]
+                                                  ['Answer3_Image'],
+                                              questionVoice: docs[index]
+                                                  ['Question_Voice'],
+                                              answer1Voice: docs[index]
+                                                  ['Answer1_Voice'],
+                                              answer2Voice: docs[index]
+                                                  ['Answer2_Voice'],
+                                              answer3Voice: docs[index]
+                                                  ['Answer3_Voice'],
+                                            );
+
+                                            viewQuestionAlertDialog(
+                                              context,
+                                              viewQuestion,
+                                            );
+                                          },
                                           child: Text(
                                             'View Details',
                                             style: TextStyle(
