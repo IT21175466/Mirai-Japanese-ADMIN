@@ -24,13 +24,19 @@ class LessonsPage extends StatefulWidget {
 }
 
 class _LessonsPageState extends State<LessonsPage> {
+  TextEditingController questionNoController = TextEditingController();
   TextEditingController questionController = TextEditingController();
+  TextEditingController answer1Controller = TextEditingController();
+  TextEditingController answer2Controller = TextEditingController();
+  TextEditingController answer3Controller = TextEditingController();
+  TextEditingController correctAnswerController = TextEditingController();
 
   final db = FirebaseFirestore.instance;
 
   bool loading = false;
   bool imageUploaded = false;
 
+  //Images
   bool selectedQuestionImageUploaded = false;
   bool selectedAnswer1ImageUploaded = false;
   bool selectedAnswer2ImageUploaded = false;
@@ -46,15 +52,28 @@ class _LessonsPageState extends State<LessonsPage> {
   Uint8List selectedAnswer2ImageInBytes = Uint8List(8);
   Uint8List selectedAnswer3ImageInBytes = Uint8List(8);
 
+  //Audio
+  bool selectedQuestionAudioUploaded = false;
+  bool selectedAnswer1AudioUploaded = false;
+  bool selectedAnswer2AudioUploaded = false;
+  bool selectedAnswer3AudioUploaded = false;
+
+  String selectedQuestionAudio = '';
+  String selectedAnswer1Audio = '';
+  String selectedAnswer2Audio = '';
+  String selectedAnswer3Audio = '';
+
   //Add Lesson
-  addQuestionToFirebase(
-      Question question, BuildContext context, String questionNo) async {
+  addQuestionToFirebase(Question question, BuildContext context,
+      String lessonNo, String questionNo) async {
     setState(() {
       loading = true;
     });
     try {
       db
           .collection("Lessons")
+          .doc(lessonNo)
+          .collection("Questions")
           .doc(questionNo)
           .set(question.toJson())
           .then((value) async {
@@ -112,7 +131,7 @@ class _LessonsPageState extends State<LessonsPage> {
                       ),
                     ),
                     PhoneTextField(
-                      controller: questionController,
+                      controller: questionNoController,
                       labelText: 'Question Number',
                       hintText: '1 (Enter only numbers)',
                     ),
@@ -176,24 +195,57 @@ class _LessonsPageState extends State<LessonsPage> {
                         SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          height: 45,
-                          width: 45,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.white,
-                          ),
-                          child: Center(
-                            child: Icon(Icons.voice_chat),
-                          ),
-                        ),
+                        selectedQuestionAudioUploaded
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () async {
+                                  FilePickerResult? audioResult =
+                                      await FilePicker.platform.pickFiles(
+                                    allowedExtensions: ['mp3', 'm4a'],
+                                    type: FileType.custom,
+                                  );
+
+                                  if (audioResult != null) {
+                                    setState(() {
+                                      selectedQuestionAudio =
+                                          audioResult.files.first.name;
+
+                                      selectedQuestionAudioUploaded = true;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.white,
+                                  ),
+                                  child: Center(
+                                    child: Icon(Icons.voice_chat),
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
                     Row(
                       children: [
                         Expanded(
                           child: CustomTextField(
-                            controller: questionController,
+                            controller: answer1Controller,
                             labelText: 'Answer 1',
                           ),
                         ),
@@ -249,24 +301,57 @@ class _LessonsPageState extends State<LessonsPage> {
                         SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          height: 45,
-                          width: 45,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.white,
-                          ),
-                          child: Center(
-                            child: Icon(Icons.voice_chat),
-                          ),
-                        ),
+                        selectedAnswer1AudioUploaded
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () async {
+                                  FilePickerResult? audioResult =
+                                      await FilePicker.platform.pickFiles(
+                                    allowedExtensions: ['mp3', 'm4a'],
+                                    type: FileType.custom,
+                                  );
+
+                                  if (audioResult != null) {
+                                    setState(() {
+                                      selectedAnswer1Audio =
+                                          audioResult.files.first.name;
+
+                                      selectedAnswer1AudioUploaded = true;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.white,
+                                  ),
+                                  child: Center(
+                                    child: Icon(Icons.voice_chat),
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
                     Row(
                       children: [
                         Expanded(
                           child: CustomTextField(
-                            controller: questionController,
+                            controller: answer2Controller,
                             labelText: 'Answer 2',
                           ),
                         ),
@@ -322,24 +407,57 @@ class _LessonsPageState extends State<LessonsPage> {
                         SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          height: 45,
-                          width: 45,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.white,
-                          ),
-                          child: Center(
-                            child: Icon(Icons.voice_chat),
-                          ),
-                        ),
+                        selectedAnswer2AudioUploaded
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () async {
+                                  FilePickerResult? audioResult =
+                                      await FilePicker.platform.pickFiles(
+                                    allowedExtensions: ['mp3', 'm4a'],
+                                    type: FileType.custom,
+                                  );
+
+                                  if (audioResult != null) {
+                                    setState(() {
+                                      selectedAnswer2Audio =
+                                          audioResult.files.first.name;
+
+                                      selectedAnswer2AudioUploaded = true;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.white,
+                                  ),
+                                  child: Center(
+                                    child: Icon(Icons.voice_chat),
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
                     Row(
                       children: [
                         Expanded(
                           child: CustomTextField(
-                            controller: questionController,
+                            controller: answer3Controller,
                             labelText: 'Answer 3',
                           ),
                         ),
@@ -395,18 +513,55 @@ class _LessonsPageState extends State<LessonsPage> {
                         SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          height: 45,
-                          width: 45,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.white,
-                          ),
-                          child: Center(
-                            child: Icon(Icons.voice_chat),
-                          ),
-                        ),
+                        selectedAnswer3AudioUploaded
+                            ? Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () async {
+                                  FilePickerResult? audioResult =
+                                      await FilePicker.platform.pickFiles(
+                                    allowedExtensions: ['mp3', 'm4a'],
+                                    type: FileType.custom,
+                                  );
+
+                                  if (audioResult != null) {
+                                    setState(() {
+                                      selectedAnswer3Audio =
+                                          audioResult.files.first.name;
+
+                                      selectedAnswer3AudioUploaded = true;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.white,
+                                  ),
+                                  child: Center(
+                                    child: Icon(Icons.voice_chat),
+                                  ),
+                                ),
+                              ),
                       ],
+                    ),
+                    CustomTextField(
+                      controller: correctAnswerController,
+                      labelText: 'Correct Answer',
                     ),
                     SizedBox(
                       height: 10,
@@ -433,6 +588,23 @@ class _LessonsPageState extends State<LessonsPage> {
                     selectedAnswer1ImageUploaded = false;
                     selectedAnswer2ImageUploaded = false;
                     selectedAnswer3ImageUploaded = false;
+
+                    questionNoController.clear();
+                    answer1Controller.clear();
+                    answer2Controller.clear();
+                    answer3Controller.clear();
+                    correctAnswerController.clear();
+
+                    //Audio
+                    selectedQuestionAudioUploaded = false;
+                    selectedAnswer1AudioUploaded = false;
+                    selectedAnswer2AudioUploaded = false;
+                    selectedAnswer3AudioUploaded = false;
+
+                    selectedQuestionAudio = '';
+                    selectedAnswer1Audio = '';
+                    selectedAnswer2Audio = '';
+                    selectedAnswer3Audio = '';
                   });
                   Navigator.of(ctx).pop();
                 },
@@ -446,7 +618,33 @@ class _LessonsPageState extends State<LessonsPage> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(ctx).pop();
+                  if (questionNoController.text.isEmpty ||
+                      questionController.text.isEmpty ||
+                      answer1Controller.text.isEmpty ||
+                      answer2Controller.text.isEmpty ||
+                      answer3Controller.text.isEmpty ||
+                      correctAnswerController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Please Enter Details"),
+                      ),
+                    );
+                  } else {
+                    if (correctAnswerController.text ==
+                            answer1Controller.text ||
+                        correctAnswerController.text ==
+                            answer2Controller.text ||
+                        correctAnswerController.text ==
+                            answer3Controller.text) {
+                      print('OK');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please Check Answer"),
+                        ),
+                      );
+                    }
+                  }
                 },
                 child: const Text(
                   "Add",
