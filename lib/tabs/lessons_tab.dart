@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firabase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/constaints/app_colors.dart';
+import 'package:mirai_japanese_admin/dashboard/lesson_page.dart';
 import 'package:mirai_japanese_admin/models/lesson.dart';
 import 'package:mirai_japanese_admin/widgets/custom_button.dart';
 import 'package:mirai_japanese_admin/widgets/phone_textfeild.dart';
@@ -254,7 +255,10 @@ class _LessonsTabState extends State<LessonsTab> {
                             onTap: () async {
                               try {
                                 FilePickerResult? fileResult =
-                                    await FilePicker.platform.pickFiles();
+                                    await FilePicker.platform.pickFiles(
+                                  allowedExtensions: ['png', 'jpg'],
+                                  type: FileType.custom,
+                                );
 
                                 if (fileResult != null) {
                                   setState(() {
@@ -573,226 +577,6 @@ class _LessonsTabState extends State<LessonsTab> {
       );
     }
 
-    void addQuestionAlertDialog() {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(
-            "Add New Question",
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-            ),
-          ),
-          content: Container(
-            height: screenHeight - 300,
-            width: screenWidth / 2,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Text(
-                    "Required*",
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                    ),
-                  ),
-                  PhoneTextField(
-                    controller: questionNoController,
-                    labelText: 'Question Number',
-                    hintText: '1 (Enter only numbers)',
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          controller: questionController,
-                          labelText: 'Question',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add_photo_alternate),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.voice_chat),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          controller: questionController,
-                          labelText: 'Answer 1',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add_photo_alternate),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.voice_chat),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          controller: questionController,
-                          labelText: 'Answer 2',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add_photo_alternate),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.voice_chat),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          controller: questionController,
-                          labelText: 'Answer 3',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add_photo_alternate),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Icon(Icons.voice_chat),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  color: Colors.red,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: const Text(
-                "Add",
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  color: AppColors.accentColor,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -923,7 +707,19 @@ class _LessonsTabState extends State<LessonsTab> {
                         itemCount: docs.length,
                         itemBuilder: (context, index) {
                           return GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LessonsPage(
+                                    lessionNo: docs[index]['LessonNo'],
+                                    lessonTitle: docs[index]['LessonTitle'],
+                                    imageUrl:
+                                        docs[index]['Image_Url'].toString(),
+                                  ),
+                                ),
+                              );
+                            },
                             child: Container(
                               height: 60,
                               width: screenWidth,
