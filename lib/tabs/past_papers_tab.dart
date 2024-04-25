@@ -176,7 +176,7 @@ class _PastPapersTabState extends State<PastPapersTab> {
       });
 
       if (imageUrl ==
-          'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/past_paper_images%2F5521505_2833674.jpg?alt=media&token=80f45559-7f25-45d3-8701-77fa97b0aea4') {
+          'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/past_paper_images%2F5521505_2833674.jpg?alt=media&token=537b0cd4-82c3-4938-a39e-752f6a9fe097') {
         print('Default Image Cannot Delete');
       } else {
         await FirebaseStorage.instance.refFromURL(imageUrl).delete();
@@ -190,6 +190,10 @@ class _PastPapersTabState extends State<PastPapersTab> {
           content: Text(e.toString()),
         ),
       );
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -338,7 +342,7 @@ class _PastPapersTabState extends State<PastPapersTab> {
                           lessionNo: lessonNoController.text.trim(),
                           lessonTitle: lessonTitleController.text,
                           imageUrl:
-                              'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/past_paper_images%2F5521505_2833674.jpg?alt=media&token=80f45559-7f25-45d3-8701-77fa97b0aea4',
+                              'https://firebasestorage.googleapis.com/v0/b/mirai-japanese-n5.appspot.com/o/past_paper_images%2F5521505_2833674.jpg?alt=media&token=537b0cd4-82c3-4938-a39e-752f6a9fe097',
                         );
 
                         await addPastPaperToFirebaseWithoutImage(
