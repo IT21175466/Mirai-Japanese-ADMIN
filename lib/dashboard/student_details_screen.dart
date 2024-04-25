@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/constaints/app_colors.dart';
-import 'package:mirai_japanese_admin/models/mark.dart';
 import 'package:mirai_japanese_admin/widgets/user_info_card.dart';
 
 class StudentDetails extends StatefulWidget {
@@ -11,23 +10,16 @@ class StudentDetails extends StatefulWidget {
   final String phoneNum;
   final String dateOfBirth;
   final String date;
-  final List<Mark> lessonMarks;
-  final List<Mark> pastPaperMarks;
-  final int completedLessons;
-  final int completedPastPapers;
-  const StudentDetails(
-      {super.key,
-      required this.userID,
-      required this.firstName,
-      required this.lastName,
-      required this.email,
-      required this.phoneNum,
-      required this.dateOfBirth,
-      required this.date,
-      required this.lessonMarks,
-      required this.pastPaperMarks,
-      required this.completedLessons,
-      required this.completedPastPapers});
+  const StudentDetails({
+    super.key,
+    required this.userID,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phoneNum,
+    required this.dateOfBirth,
+    required this.date,
+  });
 
   @override
   State<StudentDetails> createState() => _StudentDetailsState();
@@ -93,7 +85,7 @@ class _StudentDetailsState extends State<StudentDetails> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '${widget.completedLessons}',
+                            'widget.completedLessions.length',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
@@ -151,7 +143,7 @@ class _StudentDetailsState extends State<StudentDetails> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '${widget.completedPastPapers}',
+                            'widget.completedPastPapers',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,

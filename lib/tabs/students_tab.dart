@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/constaints/app_colors.dart';
 import 'package:mirai_japanese_admin/dashboard/student_details_screen.dart';
-import 'package:mirai_japanese_admin/models/student.dart';
 import 'package:mirai_japanese_admin/widgets/search_textfild.dart';
 
 class StudentsTab extends StatefulWidget {
@@ -127,9 +126,10 @@ class _StudentsTabState extends State<StudentsTab> {
             Container(
               height: screenHeight - 200,
               width: screenWidth,
-              child: FutureBuilder(
-                  future:
-                      FirebaseFirestore.instance.collection('Students').get(),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('Students')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
@@ -140,32 +140,23 @@ class _StudentsTabState extends State<StudentsTab> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else {
-                      List<Student> students = snapshot.data!.docs
-                          .map((doc) => Student.fromJson(doc))
-                          .toList();
-
                       return ListView.builder(
-                        itemCount: students.length,
+                        itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
-                          final student = students[index];
+                          DocumentSnapshot student = snapshot.data!.docs[index];
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => StudentDetails(
-                                    userID: student.userID,
-                                    firstName: student.firstName,
-                                    lastName: student.lastName,
-                                    email: student.email,
-                                    phoneNum: student.phoneNum,
-                                    dateOfBirth: student.dateOfBirth,
-                                    date: student.date,
-                                    lessonMarks: student.lessonMarks,
-                                    pastPaperMarks: student.pastPaperMarks,
-                                    completedLessons: student.completedLessons,
-                                    completedPastPapers:
-                                        student.completedPastPapers,
+                                    userID: student['UserID'],
+                                    firstName: student['FirstName'],
+                                    lastName: student['LastName'],
+                                    email: student['Email'],
+                                    phoneNum: student['PhoneNumber'],
+                                    dateOfBirth: student['DateOfBirth'],
+                                    date: student['Registed_Date'],
                                   ),
                                 ),
                               );
@@ -189,7 +180,7 @@ class _StudentsTabState extends State<StudentsTab> {
                                       Container(
                                         width: screenWidth / 10 * 3,
                                         child: Text(
-                                          '${student.firstName} ${student.lastName}',
+                                          '${student['FirstName']} ${student['LastName']}',
                                           style: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontWeight: FontWeight.w600,
@@ -199,7 +190,7 @@ class _StudentsTabState extends State<StudentsTab> {
                                         ),
                                       ),
                                       Text(
-                                        '${student.phoneNum}',
+                                        '${student['PhoneNumber']}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w500,
@@ -215,7 +206,7 @@ class _StudentsTabState extends State<StudentsTab> {
                                     width: screenWidth / 10 * 1,
                                     child: Center(
                                       child: Text(
-                                        '${student.dateOfBirth}',
+                                        '${student['DateOfBirth']}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w500,
@@ -230,7 +221,7 @@ class _StudentsTabState extends State<StudentsTab> {
                                     width: screenWidth / 10 * 1.5,
                                     child: Center(
                                       child: Text(
-                                        '${student.completedLessons}',
+                                        'student.completedLessions.length',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w500,
@@ -245,7 +236,7 @@ class _StudentsTabState extends State<StudentsTab> {
                                     width: screenWidth / 10 * 1.5,
                                     child: Center(
                                       child: Text(
-                                        '${student.completedPastPapers}',
+                                        'student.completedPastPapers',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w500,
