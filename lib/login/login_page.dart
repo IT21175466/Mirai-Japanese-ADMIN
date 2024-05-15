@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/constaints/app_colors.dart';
 import 'package:mirai_japanese_admin/widgets/custom_button.dart';
@@ -13,6 +14,33 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> login() async {
+    try {
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text,
+          )
+          .then((value) => {
+                isLoading = false,
+              });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+            style: TextStyle(
+              fontFamily: 'Poppins',
+            ),
+          ),
+        ),
+      );
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +103,43 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 25,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomButton(
-                        text: 'Login', height: 50, width: screenWidth / 3.5),
-                  ),
+                  isLoading
+                      ? Container(
+                          height: 50,
+                          width: screenWidth / 3.5,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            if (emailController.text.isEmpty ||
+                                passwordController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Please enter details!",
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              login();
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: CustomButton(
+                                text: 'Login',
+                                height: 50,
+                                width: screenWidth / 3.5),
+                          ),
+                        ),
                   Spacer(),
                 ],
               ),

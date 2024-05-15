@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/constaints/app_colors.dart';
 import 'package:mirai_japanese_admin/dashboard/student_details_screen.dart';
@@ -14,6 +15,8 @@ class StudentsTab extends StatefulWidget {
 class _StudentsTabState extends State<StudentsTab> {
   TextEditingController searchController = TextEditingController();
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -21,14 +24,56 @@ class _StudentsTabState extends State<StudentsTab> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
-          'Students',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            color: Colors.white,
-          ),
+        title: Row(
+          children: [
+            Spacer(),
+            Text(
+              'Students',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+            Spacer(),
+            GestureDetector(
+              onTap: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                await FirebaseAuth.instance.signOut().then((value) => {
+                      isLoading = false,
+                    });
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                decoration: BoxDecoration(
+                  color: Colors.redAccent,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: isLoading
+                    ? Text(
+                        'Please Wait!',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        'LogOut',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
+            ),
+          ],
         ),
         backgroundColor: AppColors.borderColor,
       ),
