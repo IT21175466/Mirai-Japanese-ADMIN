@@ -20,20 +20,8 @@ class _LoginPageState extends State<LoginPage> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Admin Login',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: AppColors.borderColor,
-      ),
       body: Container(
-        height: screenHeight - AppBar().preferredSize.height,
+        height: screenHeight,
         width: screenWidth,
         color: Color.fromARGB(255, 234, 242, 255),
         child: Column(
@@ -42,7 +30,6 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               height: screenHeight / 2,
               width: screenWidth / 3.5,
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
@@ -52,21 +39,47 @@ class _LoginPageState extends State<LoginPage> {
               ),
               child: Column(
                 children: [
-                  Spacer(),
-                  SizedBox(
+                  Container(
+                    width: screenWidth / 3.5,
                     height: 60,
-                    child: Image.asset('assets/images/splashLogo.png'),
+                    decoration: BoxDecoration(
+                      color: AppColors.borderColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Admin Login',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                   Spacer(),
-                  CustomTextField(
-                      controller: emailController, labelText: 'Email'),
-                  CustomTextField(
-                      controller: passwordController, labelText: 'Password'),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: emailController, labelText: 'Email'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: passwordController, labelText: 'Password'),
+                  ),
                   SizedBox(
                     height: 25,
                   ),
-                  CustomButton(
-                      text: 'Login', height: 50, width: screenWidth / 3.5),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomButton(
+                        text: 'Login', height: 50, width: screenWidth / 3.5),
+                  ),
                   Spacer(),
                 ],
               ),
