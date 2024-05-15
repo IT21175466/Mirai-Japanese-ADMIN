@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mirai_japanese_admin/constaints/app_colors.dart';
 import 'package:mirai_japanese_admin/tabs/lessons_tab.dart';
 import 'package:mirai_japanese_admin/tabs/past_papers_tab.dart';
-import 'package:mirai_japanese_admin/tabs/settings_tab.dart';
 import 'package:mirai_japanese_admin/tabs/students_tab.dart';
 
 class Dashboard extends StatefulWidget {
@@ -19,7 +18,7 @@ class _DashboardState extends State<Dashboard> {
     StudentsTab(),
     LessonsTab(),
     PastPapersTab(),
-    SettingsTab(),
+    //SettingsTab(),
   ];
 
   @override
@@ -71,10 +70,10 @@ class _DashboardState extends State<Dashboard> {
                       icon: Icon(Icons.document_scanner),
                       label: Text("Past Papers"),
                     ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.settings),
-                      label: Text("Settings"),
-                    ),
+                    // NavigationRailDestination(
+                    //   icon: Icon(Icons.settings),
+                    //   label: Text("Settings"),
+                    // ),
                   ],
                   selectedIndex: _selectedIndex),
             ),
