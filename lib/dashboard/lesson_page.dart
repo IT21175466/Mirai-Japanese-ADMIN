@@ -543,6 +543,7 @@ class _LessonsPageState extends State<LessonsPage> {
         selectedAnswer1Audio = '';
         selectedAnswer2Audio = '';
         selectedAnswer3Audio = '';
+        loading = false;
       });
       Navigator.pop(context);
     }

@@ -544,6 +544,7 @@ class _PastPapersPageState extends State<PastPapersPage> {
         selectedAnswer1Audio = '';
         selectedAnswer2Audio = '';
         selectedAnswer3Audio = '';
+        loading = false;
       });
       Navigator.pop(context);
     }
