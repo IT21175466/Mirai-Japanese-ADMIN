@@ -10,6 +10,8 @@ class StudentDetails extends StatefulWidget {
   final String phoneNum;
   final String dateOfBirth;
   final String date;
+  final List completedLessons;
+  final List completedPastPapers;
   const StudentDetails({
     super.key,
     required this.userID,
@@ -19,6 +21,8 @@ class StudentDetails extends StatefulWidget {
     required this.phoneNum,
     required this.dateOfBirth,
     required this.date,
+    required this.completedLessons,
+    required this.completedPastPapers,
   });
 
   @override
@@ -85,7 +89,7 @@ class _StudentDetailsState extends State<StudentDetails> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            'widget.completedLessions.length',
+                            '${widget.completedLessons.length}',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
@@ -143,7 +147,7 @@ class _StudentDetailsState extends State<StudentDetails> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            'widget.completedPastPapers',
+                            '${widget.completedPastPapers.length}',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,

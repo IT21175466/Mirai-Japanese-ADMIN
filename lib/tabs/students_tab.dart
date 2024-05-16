@@ -202,6 +202,10 @@ class _StudentsTabState extends State<StudentsTab> {
                                     phoneNum: student['PhoneNumber'],
                                     dateOfBirth: student['DateOfBirth'],
                                     date: student['Registed_Date'],
+                                    completedLessons:
+                                        student['Completed_Lessons'],
+                                    completedPastPapers:
+                                        student['Completed_PastPapers'],
                                   ),
                                 ),
                               );
@@ -266,7 +270,7 @@ class _StudentsTabState extends State<StudentsTab> {
                                     width: screenWidth / 10 * 1.5,
                                     child: Center(
                                       child: Text(
-                                        'student.completedLessions.length',
+                                        '${student['Completed_Lessons']}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w500,
@@ -281,7 +285,7 @@ class _StudentsTabState extends State<StudentsTab> {
                                     width: screenWidth / 10 * 1.5,
                                     child: Center(
                                       child: Text(
-                                        'student.completedPastPapers',
+                                        '${student['Completed_PastPapers']}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w500,
