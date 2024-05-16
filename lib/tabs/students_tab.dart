@@ -16,6 +16,41 @@ class _StudentsTabState extends State<StudentsTab> {
   TextEditingController searchController = TextEditingController();
 
   bool isLoading = false;
+  bool loadingArrays = false;
+
+  List<String> lessionsScore = [];
+  List<String> pastPapersScore = [];
+
+  Future<void> getArrays(String sID) async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('Students')
+          .doc(sID)
+          .get();
+
+      if (docSnapshot.exists) {
+        List<dynamic>? completedLessons =
+            docSnapshot.get(['Completed_Lessons']);
+
+        List<dynamic>? completedPapers =
+            docSnapshot.get(['Completed_PastPapers']);
+
+        if (completedLessons != null) {
+          lessionsScore = List<String>.from(completedLessons);
+        } else {
+          lessionsScore = [];
+        }
+
+        if (completedPapers != null) {
+          pastPapersScore = List<String>.from(completedPapers);
+        } else {
+          pastPapersScore = [];
+        }
+      }
+    } catch (e) {
+      print(e);
+    } finally {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +170,7 @@ class _StudentsTabState extends State<StudentsTab> {
                     width: screenWidth / 10 * 1.5,
                     child: Center(
                       child: Text(
-                        'Completed Lessons',
+                        'Email',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
@@ -150,7 +185,7 @@ class _StudentsTabState extends State<StudentsTab> {
                     width: screenWidth / 10 * 1.5,
                     child: Center(
                       child: Text(
-                        'Completed PastPapers',
+                        'Registed In',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
@@ -189,118 +224,125 @@ class _StudentsTabState extends State<StudentsTab> {
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
                           DocumentSnapshot student = snapshot.data!.docs[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StudentDetails(
-                                    userID: student['UserID'],
-                                    firstName: student['FirstName'],
-                                    lastName: student['LastName'],
-                                    email: student['Email'],
-                                    phoneNum: student['PhoneNumber'],
-                                    dateOfBirth: student['DateOfBirth'],
-                                    date: student['Registed_Date'],
-                                    completedLessons:
-                                        student['Completed_Lessons'],
-                                    completedPastPapers:
-                                        student['Completed_PastPapers'],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 60,
-                              width: screenWidth,
-                              margin: EdgeInsets.symmetric(vertical: 5),
-                              padding: EdgeInsets.symmetric(horizontal: 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: AppColors.lowAccentColor,
-                              ),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Spacer(),
-                                      Container(
-                                        width: screenWidth / 10 * 3,
-                                        child: Text(
-                                          '${student['FirstName']} ${student['LastName']}',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15,
-                                            color: AppColors.textBlackColor,
+                          getArrays(student['UserID']);
+                          return loadingArrays
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => StudentDetails(
+                                          userID: student['UserID'],
+                                          firstName: student['FirstName'],
+                                          lastName: student['LastName'],
+                                          email: student['Email'],
+                                          phoneNum: student['PhoneNumber'],
+                                          dateOfBirth: student['DateOfBirth'],
+                                          date: student['Registed_Date'],
+                                          completedLessons:
+                                              student['Completed_Lessons'],
+                                          completedPastPapers:
+                                              student['Completed_PastPapers'],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    width: screenWidth,
+                                    margin: EdgeInsets.symmetric(vertical: 5),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: AppColors.lowAccentColor,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Spacer(),
+                                            Container(
+                                              width: screenWidth / 10 * 3,
+                                              child: Text(
+                                                '${student['FirstName']} ${student['LastName']}',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 15,
+                                                  color:
+                                                      AppColors.textBlackColor,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              '${student['PhoneNumber']}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 13,
+                                                color: AppColors.textGrayColor,
+                                              ),
+                                            ),
+                                            Spacer(),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          width: screenWidth / 10 * 1,
+                                          child: Center(
+                                            child: Text(
+                                              '${student['DateOfBirth']}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 15,
+                                                color: AppColors.textBlackColor,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Text(
-                                        '${student['PhoneNumber']}',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 13,
-                                          color: AppColors.textGrayColor,
+                                        Spacer(),
+                                        Container(
+                                          width: screenWidth / 10 * 1.5,
+                                          child: Center(
+                                            child: Text(
+                                              '${student['Email']}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                                color: AppColors.textBlackColor,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      Spacer(),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Container(
-                                    width: screenWidth / 10 * 1,
-                                    child: Center(
-                                      child: Text(
-                                        '${student['DateOfBirth']}',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15,
-                                          color: AppColors.textBlackColor,
+                                        Spacer(),
+                                        Container(
+                                          width: screenWidth / 10 * 1.5,
+                                          child: Center(
+                                            child: Text(
+                                              '${student['Registed_Date']}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                                color: AppColors.textBlackColor,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        Spacer(),
+                                        Icon(Icons.arrow_forward_ios),
+                                      ],
                                     ),
                                   ),
-                                  Spacer(),
-                                  Container(
-                                    width: screenWidth / 10 * 1.5,
-                                    child: Center(
-                                      child: Text(
-                                        '${student['Completed_Lessons']}',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 18,
-                                          color: AppColors.textBlackColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Container(
-                                    width: screenWidth / 10 * 1.5,
-                                    child: Center(
-                                      child: Text(
-                                        '${student['Completed_PastPapers']}',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 18,
-                                          color: AppColors.textBlackColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Icon(Icons.arrow_forward_ios),
-                                ],
-                              ),
-                            ),
-                          );
+                                );
                         },
                       );
                     }
