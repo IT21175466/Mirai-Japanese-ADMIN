@@ -1,6 +1,6 @@
 {
-    "name": "mirai_japanese_admin",
-    "short_name": "mirai_japanese_admin",
+    "name": "Mirai Admin",
+    "short_name": "Mirai Admin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

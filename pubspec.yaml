@@ -43,6 +43,7 @@ dependencies:
   file_picker: ^8.0.0+1
   uuid: ^4.4.0
   firebase_auth: ^4.17.5
+  url_strategy: ^0.2.0
   
 
 dev_dependencies:

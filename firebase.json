@@ -45,6 +45,10 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers" : [ {
+      "key" : "Access-Control-Allow-Origin",
+      "value" : "*"
+    } ],
     "rewrites": [
       {
         "source": "**",
